@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gardenumerology | Your Full Chart</title>
+<style>
+:root {
+  --pale-purple:#eee8fa; --light-purple:#d8c8f0; --purple:#9274c5;
+  --dark-purple:#49366f; --indigo:#353b75; --pale-blue:#e5effb;
+  --green:#77977d; --dark-green:#41674c; --cream:#fcfaff;
+  --text:#393348; --muted:#797186; --border:#e6def0;
+  --error-bg:#fdf2f4; --error-border:#d97b8c; --error-text:#8a2c3e;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cream);color:var(--text);font-family:Georgia,"Times New Roman",serif;line-height:1.7}
+header{padding:42px 20px 34px;text-align:center;background:linear-gradient(140deg,#eee8fa,#e5effb,#f2eafa);border-bottom:1px solid var(--border);position:relative}
+.top-nav{position:absolute;top:15px;right:25px;display:flex;gap:15px;font:14px Arial,sans-serif}
+.top-nav a{color:var(--dark-purple);text-decoration:none;font-weight:bold}
+.top-nav a:hover{text-decoration:underline}
+.brand{color:var(--dark-purple);font-size:15px;letter-spacing:4px;text-transform:uppercase}
+header h1{color:var(--dark-purple);font-size:clamp(30px,5vw,48px);font-weight:normal;margin:12px 0}
+header p{max-width:650px;margin:auto;color:#655b79}
+main{max-width:1050px;padding:30px 18px 70px;margin:auto}
+.panel,.section{background:white;border:1px solid var(--border);border-radius:17px;padding:26px;margin-bottom:24px;box-shadow:0 5px 22px rgba(73,54,111,.045)}
+.divider{border:0;height:1px;background:var(--border);margin:40px 0}
+h2{color:var(--dark-purple);font-weight:normal;font-size:27px;margin:0 0 10px}
+h3{color:var(--indigo);font-size:19px;font-weight:normal;margin:0 0 8px}
+.intro{color:var(--muted);margin-top:0}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+label{display:block;font-size:14px;color:var(--dark-purple);margin-bottom:6px}
+input{display:block;width:100%;padding:13px 14px;font:16px Georgia,serif;color:var(--text);background:#fdfbff;border:1px solid #dcd2ec;border-radius:9px}
+input:focus{outline:2px solid var(--light-purple);border-color:var(--purple)}
+.field-note{font-size:12px;color:var(--muted);margin-top:5px}
+.error-banner{display:none;background:var(--error-bg);border-left:4px solid var(--error-border);color:var(--error-text);padding:12px 16px;border-radius:8px;margin-top:16px;font:14px Arial,sans-serif}
+.error-banner.visible{display:block}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+button{border:0;border-radius:9px;padding:13px 20px;cursor:pointer;font:15px Arial,sans-serif;transition:opacity .2s,transform .1s}
+button:hover{opacity:.88}
+button:active{transform:scale(.99)}
+.primary{background:var(--dark-purple);color:white}.secondary{background:var(--pale-blue);color:var(--indigo)}
+#results{display:none}
+#results.is-visible{display:block}
+.results-title{text-align:center;padding:10px 0 25px}
+.results-title h2{font-size:32px}
+.eyebrow{color:var(--green);letter-spacing:3px;font:12px Arial,sans-serif;text-transform:uppercase}
+.number-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:20px}
+#coreNumbers.number-grid{grid-template-columns:repeat(2,minmax(0,1fr));max-width:760px;margin-left:auto;margin-right:auto}
+#coreNumbers .number-card{min-height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px 16px}
+#coreNumbers .number-card .name{min-height:2.2em;display:flex;align-items:center;justify-content:center;line-height:1.35}
+#coreNumbers .number-card .num{font-size:42px;margin:8px 0}
+@media(min-width:651px){#coreNumbers .number-card:nth-last-child(1):nth-child(odd){grid-column:1 / -1;max-width:360px;margin:0 auto}}
+.number-card{background:linear-gradient(145deg,#f5f0fc,#f0f6fd);border:1px solid var(--border);border-radius:13px;text-align:center;padding:18px 10px}
+.number-card .num{color:var(--dark-purple);font-size:38px;line-height:1.2;margin:9px 0}
+.number-card .name{font-size:14px;color:var(--indigo)}
+.number-card p{color:var(--muted);font-size:12px;margin:5px 0 0}
+.section{scroll-margin-top:20px}
+.section-head{padding-bottom:13px;border-bottom:1px solid var(--border);margin-bottom:17px}
+.reading{border-left:3px solid var(--light-purple);padding:2px 0 2px 17px;margin:18px 0}
+.reading p{margin:10px 0}
+.reading strong{color:var(--dark-purple)}
+.small-muted{color:var(--muted);font-size:13px}
+.month-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.month-card{background:#faf8fe;border:1px solid var(--border);border-radius:11px;padding:15px}
+.month-card .month-number{font-size:27px;color:var(--purple)}
+.month-card p{font-size:14px;margin-bottom:0}
+.cycle-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.cycle-card{padding:15px;border-radius:11px;background:#f6f9fd;border:1px solid #dce7f5}
+.cycle-card p{margin:5px 0 0;font-size:14px}
+.bar-row{display:grid;grid-template-columns:28px 1fr 25px;gap:10px;align-items:center;margin:10px 0;font:14px Arial,sans-serif}
+.bar-track{height:13px;background:#eee8f7;border-radius:20px;overflow:hidden}
+.bar{height:100%;background:linear-gradient(90deg,#a28bd0,#6d79ad);border-radius:20px}
+.compat-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.notice{background:#f1f6f0;border-left:3px solid var(--green);padding:13px 16px;border-radius:7px;font-size:14px}
+footer{text-align:center;padding:25px;color:var(--muted);font-size:13px}
+@media(max-width:650px){.form-grid,.number-grid,.month-grid,.cycle-grid,.compat-grid,#coreNumbers.number-grid{grid-template-columns:1fr}.panel,.section{padding:19px}header{padding-top:50px}.top-nav{position:static;justify-content:center;margin-bottom:15px}}
+@media print{body{background:white}header{padding:20px}.top-nav{display:none}main{max-width:100%;padding:10px}.panel,.section{box-shadow:none;break-inside:avoid}.no-print,#entry{display:none!important}#results{display:block!important}.month-card,.number-card,.cycle-card{break-inside:avoid}}
+</style>
+</head>
+<body>
+<header>
+  <div class="top-nav">
+    <a href="#entry">Home</a>
+    <a href="#nameReadings">Definitions</a>
+  </div>
+  <div class="brand">✦ Gardenumerology ✦</div>
+  <h1>Your Full Numerology Chart</h1>
+  <p>A personal exploration of your numbers, life cycles, natural talents, and the patterns that shape your journey.</p>
+</header>
+<main>
+  <section class="panel" id="entry">
+    <h2>Begin Your Reading</h2>
+    <p class="intro">Enter your birth information to reveal your full chart. Add another person's information to explore your compatibility.</p>
+    <form id="chartForm" novalidate>
+      <div class="form-grid">
+        <div>
+          <label for="personName">Your Full Birth Name</label>
+          <input id="personName" name="personName" autocomplete="name" required placeholder="Enter your full name">
+        </div>
+        <div>
+          <label for="birthDate">Your Date of Birth</label>
+          <input id="birthDate" name="birthDate" type="date" required>
+        </div>
+        <div>
+          <label for="otherName">Other Person's Full Name (Optional)</label>
+          <input id="otherName" name="otherName" placeholder="Partner, friend, or family member">
+        </div>
+        <div>
+          <label for="otherDate">Other Person's Date of Birth (Optional)</label>
+          <input id="otherDate" name="otherDate" type="date">
+        </div>
+      </div>
+      <p class="field-note">For the most complete name-based chart, use the full name given at birth. The other person's information is optional.</p>
+      <div id="formError" class="error-banner" role="alert"></div>
+      <div class="actions">
+        <button id="revealBtn" class="primary" type="submit">Reveal My Full Chart ✦</button>
+        <button id="resetBtn" class="secondary" type="reset">Clear Form</button>
+      </div>
+    </form>
+  </section>
+
+  <div id="results" aria-live="polite">
+    <div class="results-title">
+      <div class="eyebrow">Your Personal Blueprint</div>
+      <h2 id="welcomeName"></h2>
+      <p id="birthSummary" class="intro"></p>
+      <p class="small-muted">To see meanings of each term click on the <strong>Definitions</strong> tab at the top.</p>
+      <div class="actions no-print" style="justify-content:center">
+        <button type="button" class="primary" onclick="window.print()">Print / Save as PDF</button>
+        <button type="button" class="secondary" onclick="document.getElementById('entry').scrollIntoView({behavior:'smooth'})">Edit Birth Information</button>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="section-head"><h2>Your Core Numbers</h2><p class="intro">The foundational numbers of your personal chart.</p></div>
+      <div class="number-grid" id="coreNumbers"></div>
+    </section>
+    <hr class="divider">
+    <section class="section">
+      <div class="section-head"><h2>Your Name &amp; Inner Nature</h2></div>
+      <div id="nameReadings"></div>
+    </section>
+    <hr class="divider">
+    <section class="section">
+      <div class="section-head"><h2>Your Hidden Patterns</h2><p class="intro">Additional name-based numbers reveal recurring strengths, lessons, and tendencies.</p></div>
+      <div id="hiddenReadings"></div>
+    </section>
+    <hr class="divider">
+    <section class="section">
+      <div class="section-head"><h2>Dominating Numbers</h2><p class="intro">Your nine-number graph reveals how often each numerical value appears in your full birth name.</p></div>
+      <div id="dominantGraph"></div>
+      <div id="dominantMeaningReport" style="margin-top:20px"></div>
+      <p class="small-muted">Each bar represents the number of times that value appears in your name. A higher count indicates greater frequency, not a measure of personal worth.</p>
+    </section>
+    <hr class="divider">
+    <section class="section">
+      <div class="section-head"><h2>Your Life Cycles</h2></div>
+      <div id="periodCycles"></div>
+      <h3 style="margin-top:25px">Pinnacle Cycles</h3>
+      <div id="pinnacleCycles" class="cycle-grid"></div>
+      <h3 style="margin-top:25px">Challenge Numbers</h3>
+      <div id="challengeCycles" class="cycle-grid"></div>
+    </section>
+    <hr class="divider">
+    <section class="section">
+      <div class="section-head"><h2>Your Yearly &amp; Monthly Forecast</h2><p class="intro">Explore the themes associated with your Personal Year, Months and Days ahead.</p></div>
+      <div id="yearForecast"></div>
+      <h3 style="margin-top:24px">Your Next 12 Months</h3>
+      <div id="monthForecast" class="month-grid"></div>
+    </section>
+    <hr class="divider">
+    <section class="section">
+      <div class="section-head"><h2>Your Diamond Spirit Report</h2><p class="intro">A reflective two-year overview of mental, spiritual, and practical growth.</p></div>
+      <div id="diamondReport"></div>
+    </section>
+    <hr class="divider">
+    <section class="section">
+      <div class="section-head"><h2>Your Natural Gifts Profile</h2><p class="intro">Explore strengths and work environments associated with your numbers.</p></div>
+      <div id="talentReport"></div>
+    </section>
+    <hr class="divider">
+    <section class="section">
+      <div class="section-head"><h2>Your Lucky Numbers</h2><p class="intro">Use these as prompts for reflection and personal intention.</p></div>
+      <div id="luckyReport"></div>
+    </section>
+    <section class="section" id="relationshipSection" style="display:none">
+      <hr class="divider">
+      <div class="section-head"><h2>Relationship Compatibility</h2><p class="intro">Compare five core numbers to explore potential similarities, differences, and ways to maintain harmony.</p></div>
+      <div id="relationshipReport"></div>
+    </section>
+  </div>
+</main>
+<footer>gardenumerology · A space for self-discovery through numbers</footer>
+
+<script>
+(function() {
+  const meanings = {
+    1:{title:"Independence & Initiative",core:"One is associated with independence, originality, initiative, and the desire to forge a personal path. You may feel most fulfilled when you can make decisions, begin new projects, and see your ideas take shape.",growth:"Practice patience, collaboration, and asking for support. Independence is most powerful when it leaves room for other people's perspectives.",talent:"Leadership, entrepreneurship, project management, innovation, independent creative work.",month:"Take initiative and focus on one meaningful beginning. Set a clear intention, but avoid forcing every outcome.",day:"Choose one priority, take a practical first step, and trust yourself to learn as you go.",lucky:"Use this number as a reminder to act with intention and confidence."},
+    2:{title:"Cooperation & Sensitivity",core:"Two is associated with cooperation, diplomacy, intuition, and emotional awareness. You may notice subtle dynamics between people and value relationships built on mutual understanding.",growth:"Remember that keeping the peace should not require ignoring your own needs. Practice clear boundaries and direct communication.",talent:"Mediation, counseling, collaboration, customer relations, coordination, supportive creative work.",month:"Give relationships and teamwork thoughtful attention. Small, considerate actions can strengthen trust.",day:"Listen carefully, communicate gently, and balance another person's needs with your own.",lucky:"Use this number as a reminder to seek balance, patience, and meaningful connection."},
+    3:{title:"Expression & Creativity",core:"Three is associated with creativity, communication, imagination, and self-expression. You may be drawn to sharing ideas, bringing beauty into ordinary moments, or helping others see a fresh perspective.",growth:"Follow through on your ideas and make space for deeper feelings beneath the surface. Creativity benefits from consistency.",talent:"Writing, design, media, performance, teaching, storytelling, marketing.",month:"Make room for creative projects, conversations, and experiences that bring inspiration.",day:"Express an idea, connect with someone, or give yourself time to create without demanding perfection.",lucky:"Use this number as a reminder to communicate honestly and make room for creativity."},
+    4:{title:"Structure & Stability",core:"Four is associated with reliability, patience, structure, and practical effort. You may feel grounded when you can build something lasting and turn complicated goals into manageable steps.",growth:"Avoid becoming so focused on the plan that you miss new possibilities. Rest and flexibility help sustainable progress.",talent:"Administration, operations, planning, organization, data management, technical and detail-oriented work.",month:"Strengthen your foundations. Organize priorities, review finances, and create realistic routines.",day:"Complete one practical task, organize your environment, or make steady progress on a long-term goal.",lucky:"Use this number as a reminder that small, consistent efforts can add up."},
+    5:{title:"Freedom & Discovery",core:"Five is associated with adaptability, curiosity, freedom, and change. You may thrive when life offers variety, room to explore, and opportunities to learn through experience.",growth:"Balance spontaneity with commitments. Not every restriction is a limitation, and not every new opportunity needs an immediate yes.",talent:"Communications, travel, sales, media, entrepreneurship, fast-changing and people-facing work.",month:"Stay open to new experiences while keeping your most important priorities in view.",day:"Try a different approach, explore an idea, or make a small change that refreshes your perspective.",lucky:"Use this number as a reminder to stay curious while choosing change intentionally."},
+    6:{title:"Care & Responsibility",core:"Six is associated with care, responsibility, beauty, and a desire to create harmony. You may be someone others rely on, with a strong appreciation for supportive relationships and comfortable surroundings.",growth:"Caring for others does not mean carrying everything for them. Allow yourself to receive help and define what is truly yours to manage.",talent:"Education, design, service, hospitality, community work, mentoring, relationship-focused roles.",month:"Focus on home, relationships, and restoring balance where it is needed.",day:"Offer care where it is welcome, make your surroundings more supportive, and remember your own needs.",lucky:"Use this number as a reminder that care and healthy boundaries belong together."},
+    7:{title:"Reflection & Understanding",core:"Seven is associated with introspection, research, wisdom, and the desire to understand what lies beneath the surface. You may need quiet time to process experiences and develop your own perspective.",growth:"Be careful not to overanalyze or withdraw when connection would help. Insight becomes useful when you bring it into everyday life.",talent:"Research, analysis, writing, technology, investigation, strategy, specialized study.",month:"Slow down enough to notice patterns, learn something meaningful, and question assumptions.",day:"Make time for reflection, study, or a quiet activity that helps you think clearly.",lucky:"Use this number as a reminder to seek understanding without expecting certainty about everything."},
+    8:{title:"Ambition & Achievement",core:"Eight is associated with ambition, management, resourcefulness, and the relationship between effort and results. You may be drawn to setting substantial goals and learning how to use resources effectively.",growth:"Let success include well-being and integrity, not only visible achievements. Control cannot replace trust or adaptability.",talent:"Business, management, finance, leadership, negotiation, strategic planning.",month:"Review your goals, make deliberate decisions about resources, and recognize the progress already made.",day:"Take a measured step toward an important goal and evaluate what is producing results.",lucky:"Use this number as a reminder to combine ambition with responsibility and perspective."},
+    9:{title:"Compassion & Completion",core:"Nine is associated with compassion, perspective, generosity, and the completion of cycles. You may be drawn to meaningful causes, creative expression, and understanding experiences from a broader viewpoint.",growth:"Compassion needs boundaries. You cannot solve every problem, and letting go can make room for healthier beginnings.",talent:"Arts, advocacy, education, writing, community projects, service-oriented work.",month:"Reflect on what has run its course and where your attention would be better invested next.",day:"Finish an outstanding task, release an unnecessary burden, or offer support without overextending yourself.",lucky:"Use this number as a reminder to honor what you have learned and make room for what comes next."},
+    11:{title:"Inspiration & Intuition",core:"Eleven is traditionally treated as a master number associated with inspiration, sensitivity, and visionary thinking. It can symbolize the challenge of translating strong impressions and ideals into grounded action.",growth:"Balance intuition with evidence, rest, and practical steps. You do not need to interpret every feeling as a sign.",talent:"Creative direction, communication, mentoring, visionary projects, work combining imagination and insight.",month:"Notice what inspires you, then choose one realistic way to put that inspiration into practice.",day:"Pay attention to your ideas while staying grounded in the facts and needs of the moment.",lucky:"Use this number as a reminder to bring inspiration into everyday life."},
+    22:{title:"Vision Made Practical",core:"Twenty-two is traditionally treated as a master number associated with turning ambitious ideas into practical structures. It symbolizes the meeting point between long-range vision and disciplined effort.",growth:"Large goals can become overwhelming when you feel responsible for everything. Break the vision into steps and let progress be gradual.",talent:"Systems building, entrepreneurship, operations, architecture, planning, large-scale projects.",month:"Choose a long-term priority and strengthen one part of the foundation supporting it.",day:"Turn an ambitious idea into a concrete action that you can realistically complete.",lucky:"Use this number as a reminder to make your vision workable, one step at a time."},
+    33:{title:"Compassionate Expression",core:"Thirty-three is traditionally treated as a master number associated with compassionate expression, encouragement, and service. It symbolizes sharing knowledge or creativity in ways that help others grow.",growth:"Support does not mean self-sacrifice. Let your care remain sustainable, mutual, and grounded in reality.",talent:"Teaching, creative communication, mentoring, community work, supportive leadership.",month:"Consider how your skills can contribute meaningfully without neglecting your own priorities.",day:"Offer thoughtful encouragement or create something that reflects your values.",lucky:"Use this number as a reminder to pair compassion with healthy limits."},
+    44:{title:"Endurance & Mastery",core:"Forty-four is used in some modern numerology systems as a master number associated with endurance, structure, and building lasting results. Interpretations of this number vary by tradition.",growth:"Avoid making every responsibility a test of your worth. Sustainable progress includes flexibility, rest, and asking for assistance.",talent:"Operations, systems, logistics, strategic implementation, organization, complex project management.",month:"Review the structures that support your goals and strengthen the ones that need attention.",day:"Focus on a practical task that makes a meaningful long-term difference.",lucky:"Use this number as a reminder to build steadily without demanding perfection."}
+  };
+
+  const lifePathDeep = {
+    1:{title:"The Independent Pioneer",p1:"Your path emphasizes independence, originality, initiative, and the desire to shape your own direction. You may feel energized by new beginnings, solving problems in your own way, and creating opportunities rather than waiting for them to appear. At your best, you bring courage and momentum to situations that have stalled.",p2:"Impatience, isolation, or the pressure to prove yourself can become obstacles on this journey. You may resist advice, feel frustrated by slow progress, or believe you must handle everything entirely on your own without sharing burdens.",p3:"Develop self-trust without closing yourself off to feedback from trusted peers or mentors. Leadership does not require controlling every tiny detail, and asking for support does not diminish your independence in the slightest. Choose goals that reflect your core values and allow experience to refine your ideas over time.",p4:"Your path is ultimately about becoming confident enough to act decisively while remaining flexible enough to learn from every twist and turn. By balancing your natural drive with collaborative wisdom, you build a sustainable foundation for long-term fulfillment and authentic personal leadership."},
+    2:{title:"The Harmonizer",p1:"Your path emphasizes cooperation, sensitivity, diplomacy, and emotional awareness in all areas of life. You naturally notice subtle shifts in relationships, understand multiple perspectives, and help people feel truly heard. Collaboration serves as a powerful and nurturing setting for your unique abilities.",p2:"You may frequently avoid healthy conflict, second-guess your own intuition, or place other people's comfort far ahead of your own basic needs. Waiting for universal agreement from everyone around you can also severely delay important personal choices.",p3:"Build harmony through radical honesty rather than quiet self-silencing. Practice clear boundaries and remember that respectful disagreement can actually strengthen mutual understanding. Look for creative ways to connect people, ideas, and resources harmoniously.",p4:"Your contribution may often feel quiet, but it is deeply significant; listening carefully and noticing what others overlook helps create lasting trust. By honoring your own voice alongside others, you cultivate deeply rewarding connections that stand the test of time."},
+    3:{title:"The Creative Communicator",p1:"Your path highlights imagination, expression, communication, and the deep desire to bring abstract ideas into living color. Writing, art, design, storytelling, performance, or everyday conversation give you vital channels to share your unique perspective.",p2:"You may occasionally start more creative projects than you actually finish, hide difficult emotions behind humor, or become discouraged when your work is not immediately recognized. Consistency can sometimes feel like a difficult chore when inspiration shifts.",p3:"Give your natural creativity enough structure to truly develop and flourish. Practice your craft regularly, finish meaningful projects that matter to you, and allow honest expression even when the underlying subject is emotionally complex.",p4:"Decide what you want to communicate and who might benefit most from your perspective. You do not have to be constantly outgoing to honor this path; thoughtful and private creative work counts equally toward fulfilling your expressive potential."},
+    4:{title:"The Builder",p1:"Your path emphasizes reliability, patience, structure, and the remarkable ability to turn vague plans into workable systems. You value tangible progress deeply and feel profoundly satisfied when dedicated effort creates something dependable and lasting.",p2:"An intense desire for security can sometimes make unexpected change feel uncomfortable or threatening. You may become overly strict with yourself or feel that a plan must be completely perfect before you ever take the first step.",p3:"Build a life that is both dependable and adaptable to changing circumstances. Remember that plans are useful tools rather than permanent rules, and feel free to change your approach when real-world conditions require it.",p4:"Break ambitious goals into manageable steps and take time to recognize gradual progress. Your organizational skills are exceptionally valuable when balanced properly with rest, imagination, and openness to constructive revision."},
+    5:{title:"The Explorer",p1:"Your path emphasizes freedom, curiosity, adaptability, and learning directly through vibrant experience. You are consistently energized by variety, new environments, stimulating conversation, and exciting opportunities to test endless possibilities.",p2:"Constant change can occasionally prevent you from developing true mastery in any single area. You may act impulsively or mistake temporary discomfort for proof that you need to scrap everything and head in a completely new direction.",p3:"Make your freedom sustainable by keeping conscious commitments to the core values and goals that matter most. You can freely experiment with your methods without abandoning your ultimate priorities and long-term vision.",p4:"Follow your natural curiosity in ways that continuously expand your understanding of the world. Take time to reflect deeply on what new experiences teach you, using that acquired knowledge to make far more intentional life choices."},
+    6:{title:"The Nurturer",p1:"Your path highlights care, responsibility, beauty, and the profound desire to create supportive, harmonious environments. You naturally notice what needs loving attention and feel deeply fulfilled by helping people, improving spaces, or uplifting your community.",p2:"Being dependable can easily transform into carrying heavy responsibilities that actually belong to other people. You may feel unwarranted guilt when choosing your own needs or try hard to fix situations that require independent decisions.",p3:"Practice genuine care without falling into chronic overextension. Healthy boundaries allow compassion to remain authentic and sustainable, so make sure to allow others to contribute and learn on their own terms.",p4:"Explore what true harmony means beyond simply keeping everyone else happy at your expense. Relationships, creative work, home improvement, and community service all serve as meaningful outlets when your own well-being remains centered."},
+    7:{title:"The Seeker",p1:"Your path emphasizes reflection, analysis, curiosity, and the relentless search for deeper spiritual and mental understanding. You have a strong urge to look far beyond surface appearances, investigate how things work, and develop a wise personal philosophy.",p2:"Thinking deeply can sometimes curdle into overthinking when you feel paralyzed and unable to act without absolute certainty. You may also tend to withdraw socially when misunderstood or keep valuable insights hidden away privately.",p3:"Connect your profound insights directly with lived, practical experience. Ask probing questions without demanding immediate answers, and test your abstract ideas through grounded action and meaningful conversations.",p4:"Make dedicated room for quiet study and contemplation. Research, specialized knowledge, creativity, and problem-solving are deeply rewarding, especially when you share what you learn in practical, helpful ways with others."},
+    8:{title:"The Strategist",p1:"Your path emphasizes ambition, resourcefulness, sound management, and successfully turning visionary ideas into concrete results. You are naturally drawn to leadership, business strategy, financial stability, and managing complex responsibilities.",p2:"Achievement can sometimes become an exhausting and unforgiving measure of your personal worth. You may try to control too many variables, overlook essential emotional needs, or feel deeply discouraged when results take time to materialize.",p3:"Understand true power as a profound responsibility rather than mere domination. Use your resources carefully, collaborate openly with others, and define personal success to include holistic well-being and unshakable integrity.",p4:"Choose ambitious yet realistic goals and regularly review whether your methods still align with your core values. Effective leadership means making sound decisions, creating opportunities, and utilizing your influence thoughtfully."},
+    9:{title:"The Humanitarian",p1:"Your path emphasizes compassion, broad perspective, creative expression, and a deep awareness of the wider human experience. You are naturally drawn toward meaningful causes, art, community service, or experiences that expand your worldview.",p2:"You may frequently give far more energy than you can sustainably afford, feel personally responsible for systemic problems outside your control, or become overly attached to an idealized outcome that may not happen.",p3:"Always combine your natural compassion with healthy discernment. You can care deeply about others without trying to rescue everyone, and you can release a situation gracefully without denying its historical importance.",p4:"Consider where your experience, creativity, or empathy can make a genuinely practical contribution. Meaningful service appears in everyday kindness and honest work, not just grand, sweeping gestures."},
+    11:{title:"The Inspired Intuitive",p1:"Master number 11 is associated in numerology with heightened sensitivity, profound inspiration, and visionary thinking. You notice subtle patterns effortlessly, feel strongly about inspired ideas, and often imagine future possibilities.",p2:"Intense inner impressions can easily feel overwhelming without adequate rest and perspective. You may set impossibly high expectations for yourself or mistake emotional intensity for absolute objective certainty.",p3:"Ground your soaring inspiration in practical, everyday habits. Check your underlying assumptions, seek out trusted perspectives from reliable friends, and give your imaginative ideas plenty of time to develop naturally.",p4:"Explore diverse ways to communicate, create, support, or guide others. The delicate balance between imaginative vision and grounded, practical action forms the very core of this numerology path."},
+    22:{title:"The Visionary Builder",p1:"Master number 22 is associated with turning a broad, sweeping vision into something immensely useful and lasting. Its powerful symbolism combines grand imagination with strict structural discipline and concrete execution steps.",p2:"Large, daunting ambitions can make ordinary, day-to-day progress feel inadequate or disappointing. You may take on far too much at once, wait indefinitely for a perfect plan, or grow frustrated when others lag behind.",p3:"Break large, complex ambitions down into achievable, bite-sized stages. Delegate tasks effectively, adapt smoothly to real-world circumstances, and recognize that steady, incremental progress matters far more than perfection.",p4:"Look for tangible opportunities to create something that serves a genuine societal need—whether that is an enterprise, creative project, community initiative, or dependable organizational system."},
+    33:{title:"The Compassionate Guide",p1:"Master number 33 is associated with compassionate communication, heartfelt encouragement, and devoted service. You find deep, lasting meaning in teaching, mentoring, uplifting a community, or creating purpose-driven work.",p2:"The intense desire to help can quickly become an exhausting burden if you mistakenly feel responsible for everyone else's happiness. You may ignore your personal limits or feel deeply disappointed when others choose differently.",p3:"Practice a sustainable form of generosity that explicitly includes your own needs. Support other people's autonomy while communicating your boundaries clearly and lovingly without guilt or hesitation.",p4:"Find balanced, sustainable ways to share what you know and care about. True compassion is always strongest when it is paired with personal wisdom, firm boundaries, and profound respect for human independence."}
+  };
+
+  const highLifePathMeanings = {
+    1:{p1:"The number 1 energy represents the pure spark of independence and self-starting ambition. It governs your drive to break new ground and establish a distinct personal identity.",p2:"When this energy is dominant, you may experience friction if you lean too heavily into isolation or struggle to accept input from collaborators.",p3:"Channel this vibration by leading with confidence while remaining receptive to the valuable perspectives of those around you."},
+    2:{p1:"The vibration of 2 centers on deep emotional intelligence, cooperation, and harmonious partnership. It highlights your capacity to mediate and build trusting connections.",p2:"Challenges can arise when the desire for peace supersedes your own personal boundaries, leading to quiet self-silencing.",p3:"Embrace diplomacy as a superpower, ensuring that your own needs are articulated clearly and honored equally."},
+    3:{p1:"The 3 vibration emphasizes vibrant self-expression, artistic creativity, and enthusiastic communication. It empowers you to bring color and inspiration into everyday interactions.",p2:"A tendency to scatter your focus across too many pursuits can sometimes prevent deep completion.",p3:"Anchor your artistic impulses with consistent daily habits to bring your creative visions fully to life."},
+    4:{p1:"Calculations pointing toward 4 focus on steadfast discipline, systemic organization, and reliable endurance. This energy helps you turn abstract ideas into concrete reality.",p2:"An over-reliance on rigid planning can make unexpected shifts feel unnecessarily daunting.",p3:"Build rock-solid foundations while keeping enough flexibility to adapt when life presents new paths."},
+    5:{p1:"The 5 vibration highlights dynamic curiosity, love of freedom, and learning directly through vibrant first-hand experiences. It encourages adaptability amidst constant change.",p2:"Chasing constant novelty can occasionally disrupt long-term focus or mastery in a single craft.",p3:"Anchor your adventurous spirit with intentional commitments to your most essential core values."},
+    6:{p1:"Rooted in nurturing responsibility, the 6 vibration emphasizes home, community care, and cultivating deep relational harmony. It highlights your role as a reliable pillar for others.",p2:"Carrying emotional weight that belongs outside your domain can rapidly deplete your energy reserves.",p3:"Practice sustainable compassion by offering support while fiercely protecting your personal boundaries."},
+    7:{p1:"The 7 vibration governs analytical depth, spiritual introspection, and the quiet pursuit of hidden truths. It encourages you to look far beyond surface appearances.",p2:"Overthinking or withdrawing completely from community connection can lead to unnecessary isolation.",p3:"Bridge your profound inner insights with practical, grounded action and meaningful dialogue."},
+    8:{p1:"Associated with executive leadership, material management, and strategic enterprise, the 8 vibration connects personal effort directly with tangible success.",p2:"Equating your self-worth exclusively with external accomplishments can invite burnout.",p3:"Balance your grand ambitions with ethical integrity, inner well-being, and genuine cooperation."},
+    9:{p1:"The 9 vibration embodies universal compassion, broad perspective, and the grace of completing significant life cycles. It connects your journey to a wider humanitarian purpose.",p2:"Resisting natural endings or trying to fix every external problem can drain your vitality.",p3:"Practice conscious release, clearing away the old to warmly welcome fresh beginnings."},
+    10:{p1:"Compound number 10 fuses the independent drive of 1 with the infinite potential of 0, signaling powerful personal renewal and self-direction.",p2:"Enthusiasm can sometimes outpace careful operational planning.",p3:"Pair your visionary optimism with structured preparation for sustained success."},
+    11:{p1:"As a master number, 11 channels heightened spiritual awareness, intuitive brilliance, and inspiring visionary insights.",p2:"Intense energetic inputs can occasionally overwhelm your nervous system without proper grounding.",p3:"Translate your profound inspirations into manageable, practical daily steps."},
+    22:{p1:"Master number 22 represents the ultimate architectural energy, capable of turning grand visions into enduring societal structures.",p2:"The immense weight of responsibility can feel daunting if you try to manage everything independently.",p3:"Break monumental goals down into collaborative, step-by-step execution plans."},
+    33:{p1:"Master number 33 embodies the archetype of the compassionate teacher, uniting unconditional service with creative encouragement.",p2:"A chronic urge to self-sacrifice can jeopardize your personal foundation if left unchecked.",p3:"Share your profound wisdom sustainably, ensuring your own cup remains full."}
+  };
+
+  const birthdayMeanings = {
+    1:["Independent initiative","Your Birthday Number 1 highlights the talent of beginning. You may be comfortable taking the first step, forming an independent opinion, or acting before everyone else is ready. This can support your Life Path by helping you turn intentions into action.","Avoid assuming independence means doing everything alone. Listening and collaboration can strengthen your initiative."],
+    2:["Diplomacy and connection","Your Birthday Number 2 highlights sensitivity to people, cooperation, and the ability to notice differences in mood or perspective. You may help others feel heard, ease tension, or find a middle ground. This can support your Life Path by helping you build trust.","Avoid hiding your needs to keep the peace. Honest communication and boundaries allow diplomacy to remain genuine."],
+    3:["Creative expression","Your Birthday Number 3 highlights imagination and expression through art, language, design, storytelling, or the way you bring ideas to life. It can give your Life Path a channel through which your inner perspective becomes visible.","Keep developing your abilities instead of waiting for inspiration. Consistent practice helps creativity become a strength."],
+    4:["Practical precision","Your Birthday Number 4 highlights patience, attention to detail, and the ability to create order. You may take responsibility seriously and enjoy understanding how something works before acting. This can support your Life Path by turning broad goals into dependable routines.","Stay flexible when a plan no longer works. Structure should support your life, not restrict every possibility."],
+    5:["Adaptability and communication","Your Birthday Number 5 highlights flexibility, curiosity, and learning on the go. You may respond quickly to changing conditions and connect with different kinds of people. This talent can support your Life Path by helping you see options when circumstances change.","Balance variety with follow-through. Maintain the commitments that protect your most important goals."],
+    6:["Care and responsibility","Your Birthday Number 6 highlights a talent for supporting others, improving surroundings, and noticing what helps people feel cared for. You may bring warmth to relationships and take pride in creating comfort and belonging.","Avoid confusing love with over-responsibility. You can be supportive without taking control of another person's choices."],
+    7:["Observation and investigation","Your Birthday Number 7 highlights careful observation, investigation, and the desire to understand what lies beneath the surface. This can support your Life Path by helping you recognize patterns and make thoughtful decisions.","Avoid getting stuck in analysis or withdrawing when conversation could clarify a question. Let insight inform action."],
+    8:["Organization and resourcefulness","Your Birthday Number 8 highlights practical judgment, organization, and the ability to think about results and resources. You may be good at coordinating tasks or finding workable routes through complex situations.","Define success broadly enough to include relationships, well-being, and personal satisfaction."],
+    9:["Perspective and generosity","Your Birthday Number 9 highlights compassion, imagination, and the ability to consider situations from multiple perspectives. This can support your Life Path by helping you connect personal choices with a wider purpose.","Maintain boundaries and recognize what is realistically yours to change. Compassion works best alongside discernment."],
+    10:["Self-direction with optimism","Your Birthday Number 10 reduces to 1 while retaining the compound symbolism of 10. It highlights initiative, self-direction, and approaching new situations with optimism. It can help you act when a fresh start is needed.","Pair enthusiasm with planning. Confidence works best when supported by preparation and awareness of other perspectives."],
+    11:["Sensitivity and inspiration","Your Birthday Number 11 is traditionally treated as a master number associated with sensitivity, intuition, and inspiration. You may notice subtle emotional cues or feel drawn to ideas that are difficult to explain at first.","Stay grounded when impressions are intense. Rest, evidence, and trusted conversations can help you decide which ideas deserve attention."],
+    12:["Expressive creativity","Your Birthday Number 12 reduces to 3 and emphasizes initiative, cooperation, and creative expression. You may be skilled at presenting ideas in an appealing way or bringing different perspectives together.","Focus your interests and complete what matters. Creativity becomes more powerful when it has direction."],
+    13:["Patient craftsmanship","Your Birthday Number 13 reduces to 4 and emphasizes persistence, practical effort, and developing something through repeated work. This talent can support your Life Path by giving ideas a stable foundation.","Do not treat every obstacle as something you must endure alone. Adapt your methods and recognize incremental progress."],
+    14:["Freedom with flexibility","Your Birthday Number 14 reduces to 5 and highlights adaptability, curiosity, and learning through experience. It can help you see alternatives when an original plan is no longer suitable.","Use freedom responsibly. Consider long-term consequences before acting on impulse."],
+    15:["Warmth and influence","Your Birthday Number 15 reduces to 6 and combines expressive charm with care and responsibility. You may create welcoming spaces, encourage others, or bring people together through communication.","Distinguish genuine care from the need to be needed. Let relationships be mutual."],
+    16:["Reflection and discernment","Your Birthday Number 16 reduces to 7 and emphasizes analysis, concentration, and understanding underlying causes. You may notice inconsistencies or see familiar situations from a new angle.","Remain open to changing your mind. Reflection is most useful when it leads to understanding rather than isolation."],
+    17:["Strategic perspective","Your Birthday Number 17 reduces to 8 and combines reflection with practical ambition. You may connect the larger goal with the smaller decisions required to reach it.","Balance determination with collaboration. Delays are not always signs of failure."],
+    18:["Compassionate judgment","Your Birthday Number 18 reduces to 9 and combines initiative and sensitivity with concern for people and consequences. You may bring perspective to complex situations.","Avoid assuming you know what others need or taking responsibility beyond your control."],
+    19:["Self-reliance and leadership","Your Birthday Number 19 reduces to 1 and highlights individuality, initiative, and the drive to shape your own direction. It can strengthen self-trust and willingness to act.","Recognize the value of interdependence. Asking for help does not take away from your achievements."],
+    20:["Emotional awareness","Your Birthday Number 20 reduces to 2 and emphasizes patience, diplomacy, and awareness of the atmosphere around you. You may respond thoughtfully rather than react immediately.","Distinguish your feelings from those you notice in others. Keep communication direct instead of relying on guesswork."],
+    21:["Imagination and social expression","Your Birthday Number 21 reduces to 3 and combines initiative and cooperation with creative expression. You may engage people and present ideas in a lively, memorable way.","Avoid relying only on enthusiasm. Follow-through helps your ideas reach their potential."],
+    22:["Building something meaningful","Your Birthday Number 22 is traditionally treated as a master number associated with vision, organization, and turning ideas into practical results. It can support your Life Path by connecting imagination with implementation.","Keep large ambitions manageable. Break projects into stages, share responsibility, and adapt as you learn."],
+    23:["Versatility and connection","Your Birthday Number 23 reduces to 5 and combines cooperation and creativity with adaptability. You may learn quickly, navigate social situations, or find alternatives when circumstances shift.","Protect your focus. Being capable of many things does not mean you must pursue every opportunity."],
+    24:["Supportive leadership","Your Birthday Number 24 reduces to 6 and combines cooperation, practical effort, and a desire to help. You may be dependable in groups and good at turning concern into useful action.","Avoid over-involvement. Offer help while respecting other people's independence and your own limits."],
+    25:["Research and inner understanding","Your Birthday Number 25 reduces to 7 and emphasizes curiosity, observation, and careful evaluation. You may investigate questions, notice missing information, or develop expertise over time.","Stay connected to practical experience and other people. Apply what you learn and let new evidence refine your views."],
+    26:["Responsible achievement","Your Birthday Number 26 reduces to 8 and combines sensitivity and cooperation with practical ambition. You may recognize both the human and organizational sides of a situation.","Keep ambition aligned with fairness. Do not measure your value solely by what you accomplish."],
+    27:["Wisdom in service","Your Birthday Number 27 reduces to 9 and combines reflection and cooperation with compassion and perspective. You may learn from different viewpoints and contribute to something beyond immediate concerns.","Maintain a clear sense of self while caring about the wider world. Choose sustainable contributions."],
+    28:["Ambition with cooperation","Your Birthday Number 28 reduces to 1 and combines relationship awareness with practical ambition and independence. You may lead while recognizing that success involves other people's skills and support.","Avoid treating every disagreement as a contest. Strong leadership includes listening and sharing credit."],
+    29:["Intuitive sensitivity","Your Birthday Number 29 reduces to 2 and combines reflection and sensitivity with cooperation. You may be interested in people's motivations and emotional nuance.","Check your interpretations rather than assuming you know what others think or feel. Ask honest questions."],
+    30:["Creative communication","Your Birthday Number 30 reduces to 3 and emphasizes imagination, expression, and giving ideas a recognizable form. You may enjoy writing, design, performance, or visual expression.","Value practice as much as inspiration. Develop your craft and let your voice mature through experience."],
+    31:["Independent craftsmanship","Your Birthday Number 31 reduces to 4 and combines individuality and imagination with practical discipline. You may develop your own method and take pride in creating something reliable.","Avoid becoming so self-reliant that you resist collaboration. Leave room for feedback, flexibility, and rest."]
+  };
+
+  function digitSum(n){return String(Math.abs(Math.trunc(n))).split("").reduce((s,d)=>s+Number(d),0)}
+  function reduce(n,preserveMaster=true){n=Math.abs(Math.trunc(n));while(n>9){if(preserveMaster&&[11,22,33].includes(n))return n;n=digitSum(n)}return n}
+  function letterValue(ch){const c=ch.toUpperCase().charCodeAt(0);return c<65||c>90?0:((c-65)%9)+1}
+  function lettersOnly(name){return name.toUpperCase().replace(/[^A-Z]/g,"")}
+  function nameTotal(name,kind="all"){let t=0;for(const ch of lettersOnly(name)){const vowel="AEIOU".includes(ch);if(kind==="vowels"&&!vowel)continue;if(kind==="consonants"&&vowel)continue;t+=letterValue(ch)}return t}
+  function dateParts(s){const [y,m,d]=s.split("-").map(Number);return{y,m,d}}
+  function lifePath(s){const{y,m,d}=dateParts(s);return reduce(digitSum(y)+digitSum(m)+digitSum(d))}
+  function highLifePath(s){const{y,m,d}=dateParts(s);return digitSum(y)+digitSum(m)+digitSum(d)}
+  function attitude(s){const{m,d}=dateParts(s);return reduce(m+d)}
+  function personalYear(s,year){const{m,d}=dateParts(s);return reduce(m+d+digitSum(year))}
+  function personalMonth(s,year,month){return reduce(personalYear(s,year)+month)}
+  function maturity(birthDate, exp){return reduce(lifePath(birthDate) + exp)}
+  function fmtDate(s){return new Date(s+"T12:00:00").toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"})}
+  function numberMeaning(n){return meanings[n]||meanings[reduce(n)]||meanings[1]}
+  function meaningText(n){const m=numberMeaning(n);return `<p>${m.core}</p><p><strong>Growth focus:</strong> ${m.growth}</p>`}
+  function card(title,n,description){return `<div class="number-card"><div class="name">${title}</div><div class="num">${n}</div>${description?`<p>${description}</p>`:""}</div>`}
+  function reading(title,value,description){return `<div class="reading"><h3>${title}${value!==""?" · "+value:""}</h3>${description}</div>`}
+  function cycleMeaning(n,type){const m=numberMeaning(n);if(type==="period")return `This life period emphasizes themes of ${m.title.toLowerCase()}. ${m.core}`;if(type==="pinnacle")return `This pinnacle cycle highlights ${m.title.toLowerCase()}. ${m.growth}`;return `This challenge number invites reflection on ${m.title.toLowerCase()}. ${m.growth}`}
+  function getCycles(s){const{y,m,d}=dateParts(s);const M=reduce(m),D=reduce(d),Y=reduce(digitSum(y)),lp=lifePath(s),firstP=reduce(M+D),secondP=reduce(D+Y),thirdP=reduce(firstP+secondP),fourthP=reduce(M+Y),firstC=Math.abs(M-D),secondC=Math.abs(D-Y),thirdC=Math.abs(firstC-secondC),fourthC=Math.abs(M-Y),firstAge=Math.max(0,36-lp);return{periods:[M,D,Y],pinnacles:[firstP,secondP,thirdP,fourthP],challenges:[reduce(firstC,false),reduce(secondC,false),reduce(thirdC,false),reduce(fourthC,false)],ages:[0,firstAge+1,firstAge+10,firstAge+19]}}
+  function countsForName(name){const c=Array(10).fill(0);for(const ch of lettersOnly(name))c[letterValue(ch)]++;return c}
+  function getHiddenPassions(name){const c=countsForName(name),max=Math.max(...c.slice(1));return max?c.slice(1).map((v,i)=>({n:i+1,c:v})).filter(x=>x.c===max).map(x=>x.n):[]}
+  function getKarmicLessons(name){const c=countsForName(name);return Array.from({length:9},(_,i)=>i+1).filter(n=>c[n]===0)}
+  function yearTheme(n){const t={1:"Beginnings, independence, and setting a new direction",2:"Patience, relationships, cooperation, and steady development",3:"Creativity, expression, social connection, and new inspiration",4:"Foundations, discipline, organization, and consistent effort",5:"Change, adaptability, exploration, and freedom",6:"Home, responsibility, relationships, and restoring balance",7:"Reflection, study, rest, and deeper understanding",8:"Ambition, resources, leadership, and tangible results",9:"Completion, release, perspective, and preparing for a new cycle",11:"Heightened inspiration, sensitivity, and translating ideas into action",22:"Long-term vision, building foundations, and practical implementation",33:"Compassion, creative contribution, and sustainable service"};return t[n]||t[reduce(n)]}
+  function escapeHtml(str){return String(str).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+
+  function getImportantMonths(py, pm) {
+    const redPY = reduce(py);
+    const redPM = reduce(pm);
+    const monthsMap = {1:[1,4,9],2:[2,3,6],3:[2,3,6],4:[1,4,8],5:[5,9,1],6:[2,3,6],7:[7,9,3],8:[1,4,8],9:[5,9,1,7]};
+    const activeList = monthsMap[redPY] || [1,5,9];
+    if (!activeList.includes(redPM)) return "";
+    const notes = {
+      1: "This month acts as a prime window for starting new projects, launching fresh ideas, and setting confident intentions.",
+      2: redPY === 6 ? "This month offers a gentle pause to focus on nurturing key relationships while sharing emotional support." : "This is a wonderful time for cultivating partnerships, tending to close relationships, and practicing patient diplomacy.",
+      3: redPY === 6 ? "During a year centered on responsibilities, this month invites you to unwind, lighten your load, and embrace playful communication." : "This month brings vibrant energy for expressive communication, creative projects, and lively social connections.",
+      4: "This period is exceptionally well-suited for building sturdy structures and organizing your daily routines.",
+      5: "Dynamic opportunities for exploration and adaptability take center stage this month.",
+      6: redPY === 6 ? "This month highlights conscious self-care and releasing excessive responsibilities through clear boundaries." : "This month emphasizes connecting with others, taking on meaningful responsibilities, and improving your immediate environment.",
+      7: "A deeply reflective month ideal for stepping back from noise, studying new topics, and analyzing your path.",
+      8: "A powerful cycle for making things happen, managing resources, and conducting important business decisions.",
+      9: "This month provides a potent opportunity for emotional release, letting go of outdated habits, and clearing space for new beginnings."
+    };
+    return `<p><strong>✦ Important Personal Month (${redPM}):</strong> ${notes[redPM] || ""}</p>`;
+  }
+
+  function getPersonalYearDescription(py) {
+    const themes = {
+      1: "Personal Year 1 initiates a powerful nine-year cycle centered around fresh starts, bold independence, and planting seeds for the future. During this time, you are encouraged to take decisive initiative, embrace your individuality, and break away from stagnant routines that no longer serve you. Focus your energy on launching new projects, setting clear personal intentions, and cultivating self-reliance in all areas of your life. Avoid second-guessing your instincts or letting past hesitations hold you back from stepping into a leadership role.",
+      2: "Personal Year 2 invites you to slow down and focus deeply on patience, cooperation, and the cultivation of harmonious relationships. This year emphasizes emotional sensitivity, diplomacy, and learning how to work effectively and empathetically alongside others. Focus on nurturing your close connections, listening to your inner intuition, and resolving lingering interpersonal friction with grace. Avoid rushing major decisions or trying to force outcomes through sheer willpower alone.",
+      3: "Personal Year 3 brings a vibrant wave of creative expression, social connection, and enthusiastic self-discovery. This cycle encourages you to share your unique voice, explore artistic or communicative projects, and welcome more joy and playfulness into your daily routine. Focus on expanding your network, speaking your truth openly, and engaging in activities that bring genuine inspiration. Avoid scattering your energy across too many unfinished ventures.",
+      4: "Personal Year 4 is dedicated to building robust structures, establishing stability, and applying diligent, practical effort toward your long-term goals. This period asks you to roll up your sleeves, organize your finances, and refine your daily routines to ensure lasting security. Focus on methodical planning, completing outstanding administrative tasks, and reinforcing your personal foundations. Avoid becoming overly rigid when unexpected opportunities appear.",
+      5: "Personal Year 5 introduces a dynamic phase of freedom, exploration, curiosity, and welcome transformation. This cycle encourages you to embrace change, try new approaches, and learn directly through vibrant, hands-on experiences. Focus on remaining open to unexpected adventures, expanding your horizons, and breaking free from restrictive patterns. Avoid acting purely on impulse without keeping core commitments in view.",
+      6: "Personal Year 6 centers squarely on themes of home, responsibility, nurturing relationships, and restoring deep personal harmony. This year highlights your connections with family and community, inviting you to create a warm, supportive environment for yourself and others. Focus on acts of service, beautifying your living space, and fostering mutual trust in your partnerships. Avoid carrying everyone else's burdens at your own expense.",
+      7: "Personal Year 7 is an introspective sanctuary dedicated to reflection, study, rest, and uncovering deeper spiritual or mental truths. This period invites you to step back from external noise, analyze your past patterns, and re-evaluate your long-term direction. Focus on quiet journaling, specialized research, meditation, and nurturing your inner wisdom. Avoid isolating yourself completely from supportive connections.",
+      8: "Personal Year 8 marks a powerful phase of ambition, achievement, material resourcefulness, and leadership. This cycle places a strong emphasis on business decisions, financial planning, and seeing the tangible results of your previous efforts. Focus on taking measured steps toward major goals and managing your resources wisely. Avoid measuring your self-worth solely by visible accomplishments.",
+      9: "Personal Year 9 represents the culmination of a nine-year journey, emphasizing compassion, emotional release, and the completion of cycles. This year is designed for letting go of outdated habits, forgiving past grievances, and clearing away physical or emotional clutter to make room for the future. Focus on wrapping up unfinished projects and practicing graceful closure. Avoid clinging stubbornly to situations that have naturally run their course."
+    };
+    const text = themes[reduce(py)] || themes[1];
+    const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+    const mid = Math.ceil(sentences.length / 2);
+    return `<p>${sentences.slice(0, mid).join(" ")}</p><p>${sentences.slice(mid).join(" ")}</p>`;
+  }
+
+  function getImportantMonthsDaysSection(py) {
+    const redPY = reduce(py);
+    const map = {
+      1: ["1, 4, 9", [
+        "<strong>Month/Day 1:</strong> A great time for starting new projects, launching fresh ideas, and setting confident intentions.",
+        "<strong>Month/Day 4:</strong> Great for building solid structure and routines for your new goals through methodical planning.",
+        "<strong>Month/Day 9:</strong> Great for letting go so you can let the new in and clear emotional space."
+      ]],
+      2: ["2, 3, 6", [
+        "<strong>Month/Day 2:</strong> A good time for cultivating and taking care of close relationships through patient diplomacy.",
+        "<strong>Month/Day 3:</strong> A good time for open communication, expressing your feelings creatively, and social connection.",
+        "<strong>Month/Day 6:</strong> Excellent for connecting deeply with others and creating home and community harmony."
+      ]],
+      3: ["2, 3, 6", [
+        "<strong>Month/Day 2:</strong> A good time for cultivating relationships and strengthening mutual trust through gentle cooperation.",
+        "<strong>Month/Day 3:</strong> A good time for communication, having fun, and exploring vibrant creative projects.",
+        "<strong>Month/Day 6:</strong> Excellent for connecting with others and beautifying your shared surroundings."
+      ]],
+      4: ["1, 4, 8", [
+        "<strong>Month/Day 1:</strong> A strong window for initiating practical plans and setting clear goals.",
+        "<strong>Month/Day 4:</strong> Ideal for reinforcing routines, organizing finances, and building lasting systems.",
+        "<strong>Month/Day 8:</strong> Productive for reviewing tangible progress and making sound resource decisions."
+      ]],
+      5: ["5, 9, 1", [
+        "<strong>Month/Day 5:</strong> Dynamic and exploratory days ideal for embracing adaptability and seeking fresh perspectives.",
+        "<strong>Month/Day 9:</strong> Great for letting go of old burdens so you can clear your path.",
+        "<strong>Month/Day 1:</strong> A great time for starting new projects and setting bold intentions."
+      ]],
+      6: ["2, 3, 6", [
+        "<strong>Month/Day 2:</strong> A good time for cultivating relationships with gentle empathy and supportive teamwork.",
+        "<strong>Month/Day 3:</strong> A good time for communication and lightening your load with playful expression.",
+        "<strong>Month/Day 6:</strong> Perfect for connecting with others and establishing deep domestic harmony."
+      ]],
+      7: ["7, 9, 3", [
+        "<strong>Month/Day 7:</strong> Great for going inward, reflecting deeply, and learning new topics through quiet study.",
+        "<strong>Month/Day 3:</strong> A good time for socializing so you do not isolate too much during year 7.",
+        "<strong>Month/Day 9:</strong> Great for releasing mental clutter and outdated assumptions."
+      ]],
+      8: ["1, 4, 8", [
+        "<strong>Month/Day 1:</strong> A great time for launching ambitious ideas with executive courage.",
+        "<strong>Month/Day 4:</strong> Great for building robust structure through careful planning and discipline.",
+        "<strong>Month/Day 8:</strong> A great time for making things happen and conducting strategic business decisions."
+      ]],
+      9: ["5, 9, 1, 7", [
+        "<strong>Month/Day 5:</strong> Dynamic days to remain adaptable as you conclude your current major cycle.",
+        "<strong>Month/Day 9:</strong> Great for letting go so you can welcome the new.",
+        "<strong>Month/Day 1:</strong> A great time for setting fresh intentions ahead of your upcoming rebirth.",
+        "<strong>Month/Day 7:</strong> Ideal for reflecting on what you want to change as you enter a new cycle."
+      ]]
+    };
+    const [label, items] = map[redPY] || map[1];
+    return `<div class="reading" style="margin-top:20px"><h3>Important Months &amp; Days</h3><p><strong>Important Personal Months/Days (${label}):</strong></p><ul>${items.map(i=>`<li>${i}</li>`).join("")}</ul></div>`;
+  }
+
+  function birthdayReading(day, lp) {
+    const data = birthdayMeanings[day] || birthdayMeanings[reduce(day, false)] || birthdayMeanings[1];
+    const reduced = reduce(day);
+    const life = lifePathDeep[lp] || lifePathDeep[reduce(lp)];
+    return `<p>Your Birthday Number ${day} reduces to ${reduced} and highlights ${data[0].toLowerCase()}. ${data[1]}</p>
+    <p>${data[2]}</p>
+    <p>Your Life Path describes the broader themes and lessons of your journey, while your Birthday Number points to a specific talent you can draw on along the way. ${life.p3}</p>`;
+  }
+
+  function highLifePathReading(n) {
+    const reduced = reduce(n);
+    const hObj = highLifePathMeanings[n] || highLifePathMeanings[reduced] || {
+      p1:`Compound number ${n} reduces to ${reduced}, blending foundational structure with progressive personal growth.`,
+      p2:`Reflect on how this compound vibration encourages balanced action and self-awareness.`,
+      p3:`Use this unique numerical energy to anchor your long-term ambitions.`
+    };
+    return `<p>${hObj.p1}</p><p>${hObj.p2}</p><p>${hObj.p3}</p><p class="small-muted">Calculated from the unreduced sum of your full birth date digits.</p>`;
+  }
+
+  function renderChart(name, birthDate, otherName, otherDate) {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1;
+    const exp = reduce(nameTotal(name));
+    const soul = reduce(nameTotal(name, "vowels"));
+    const lp = lifePath(birthDate);
+    const high = highLifePath(birthDate);
+    const att = attitude(birthDate);
+    const mat = maturity(birthDate, exp);
+    const firstName = name.trim().split(/\s+/)[0] || name;
+    const essence = reduce(nameTotal(firstName));
+    const cycles = getCycles(birthDate);
+    const hidden = getHiddenPassions(name);
+    const lessons = getKarmicLessons(name);
+    const counts = countsForName(name);
+    const birthdayDay = dateParts(birthDate).d;
+    const py = personalYear(birthDate, currentYear);
+
+    document.getElementById("welcomeName").textContent = name.trim();
+    document.getElementById("birthSummary").textContent = "Date of birth: " + fmtDate(birthDate);
+
+    const core = [
+      ["Life Path", lp, ""],
+      ["Birthday Number", birthdayDay, ""],
+      ["Attitude", att, ""],
+      ["Essence", essence, ""],
+      ["Personal Year", py, ""],
+      ["Personal Month", personalMonth(birthDate, currentYear, currentMonth), ""]
+    ];
+    document.getElementById("coreNumbers").innerHTML = core.map(x => card(x[0], x[1], x[2])).join("");
+
+    const deep = lifePathDeep[lp] || lifePathDeep[reduce(lp)];
+    const attM = numberMeaning(att);
+    const essM = numberMeaning(essence);
+    const expM = numberMeaning(exp);
+    const matM = numberMeaning(mat);
+
+    document.getElementById("nameReadings").innerHTML =
+      reading("Life Path Number", lp, `<p>${deep.p1}</p><p>${deep.p2}</p><p>${deep.p3}</p><p>${deep.p4}</p><p class="small-muted">Your Life Path is calculated from your date of birth and represents the central themes explored in this numerology chart.</p>`) +
+      reading("High Life Path Number", high, highLifePathReading(high)) +
+      reading("Birthday Number", birthdayDay, birthdayReading(birthdayDay, lp)) +
+      reading("Attitude Number", att, `<p>${attM.core}</p><p><strong>Growth focus:</strong> ${attM.growth}</p><p>Your Attitude Number shapes your initial approach to life's daily experiences, supporting your Life Path ${lp} by coloring how you greet new circumstances.</p>`) +
+      reading("Essence Number", essence, `<p>For this chart, Essence is calculated from the letters in your first name (${escapeHtml(firstName)}), reflecting your personal style of ${essM.title.toLowerCase()}.</p><p>${essM.core}</p><p><strong>Growth focus:</strong> ${essM.growth}</p><p>This essence supports your Life Path ${lp} in your everyday pursuits.</p>`) +
+      reading("Expression Number", exp, `<p>Calculated from all letters in your full birth name, your Expression number highlights ${expM.title.toLowerCase()}.</p><p>${expM.core}</p><p><strong>Growth focus:</strong> ${expM.growth}</p><p>This expression gives tangible voice and outward direction to your core Life Path ${lp}.</p>`) +
+      reading("Maturity Number", mat, `<p>Your Maturity number combines your Life Path (${lp}) and Expression (${exp}) numbers, pointing toward long-term fulfillment through ${matM.title.toLowerCase()}.</p><p>${matM.core}</p><p><strong>Growth focus:</strong> ${matM.growth}</p>`) +
+      reading("Soul Urge Number", soul, `<p>Your Soul Urge is calculated from the vowels in your full name, revealing inner motivations.</p>` + meaningText(soul));
+
+    const passionText = hidden.length
+      ? hidden.map(n => `<p><strong>${n} — ${numberMeaning(n).title}.</strong> ${numberMeaning(n).core}</p>`).join("")
+      : "There are not enough name letters to identify a dominant number.";
+    const lessonText = lessons.length
+      ? lessons.map(n => `<p><strong>${n} — ${numberMeaning(n).title}.</strong> This number does not appear among the numerical values of the letters in your name. In numerology, it is interpreted as a possible area for learning and development. ${numberMeaning(n).growth}</p>`).join("")
+      : "All numbers from 1 through 9 appear in your name, so this method identifies no missing-number Karmic Lessons.";
+
+    document.getElementById("hiddenReadings").innerHTML =
+      reading("Hidden Passion Number(s)", hidden.join(", ") || "—", passionText) +
+      reading("Karmic Lesson Number(s)", lessons.join(", ") || "None identified", lessonText) +
+      reading("Subconscious Self", 9 - lessons.length, `<p>This number is calculated as 9 minus the number of missing numerical values (1–9) in your name. ${numberMeaning(reduce(9 - lessons.length, false)).core}</p>`);
+
+    const maxCount = Math.max(1, ...counts.slice(1));
+    document.getElementById("dominantGraph").innerHTML = counts.slice(1).map((c, i) => `<div class="bar-row"><span>${i + 1}</span><div class="bar-track"><div class="bar" style="width:${(c / maxCount) * 100}%"></div></div><span>${c}</span></div>`).join("");
+    document.getElementById("dominantMeaningReport").innerHTML = `<div class="reading"><h3>Dominant Number Influence</h3><p>Your name frequency patterns reflect your core characteristics and expression paths.</p></div>`;
+
+    const periodNames = ["First Period Cycle · Formative Years", "Second Period Cycle · Productive Years", "Third Period Cycle · Later Years"];
+    document.getElementById("periodCycles").innerHTML = `<div class="cycle-grid">${cycles.periods.map((n, i) => `<div class="cycle-card"><h3>${periodNames[i]}</h3><div class="number-card"><div class="num">${n}</div></div><p>${cycleMeaning(n, "period")}</p></div>`).join("")}</div><p class="small-muted">Period cycles use the birth month, birth day, and birth year respectively.</p>`;
+
+    const pinNames = ["First Pinnacle", "Second Pinnacle", "Third Pinnacle", "Fourth Pinnacle"];
+    document.getElementById("pinnacleCycles").innerHTML = cycles.pinnacles.map((n, i) => `<div class="cycle-card"><h3>${pinNames[i]}</h3><div class="number-card"><div class="num">${n}</div></div><p class="small-muted">Approximate cycle beginning: age ${cycles.ages[i]}.</p><p>${cycleMeaning(n, "pinnacle")}</p></div>`).join("");
+
+    const challengeNames = ["First Challenge", "Second Challenge", "Third (Main) Challenge", "Fourth Challenge"];
+    document.getElementById("challengeCycles").innerHTML = cycles.challenges.map((n, i) => `<div class="cycle-card"><h3>${challengeNames[i]}</h3><div class="number-card"><div class="num">${n}</div></div><p>${cycleMeaning(n, "challenge")}</p></div>`).join("");
+
+    document.getElementById("yearForecast").innerHTML = `<div class="number-card" style="max-width:450px;margin:0 auto 18px"><div class="name">Personal Year ${currentYear}</div><div class="num">${py}</div><p>${yearTheme(py)}</p></div>${getPersonalYearDescription(py)}${getImportantMonthsDaysSection(py)}`;
+
+    const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    const months = [];
+    for (let i = 0; i < 12; i++) {
+      const dt = new Date(currentYear, currentMonth - 1 + i, 1);
+      const yy = dt.getFullYear();
+      const mm = dt.getMonth() + 1;
+      const pn = personalMonth(birthDate, yy, mm);
+      months.push(`<div class="month-card"><h3>${monthNames[mm - 1]} ${yy}</h3><div class="month-number">${pn}</div><strong>${numberMeaning(pn).title}</strong><p>${numberMeaning(pn).month}</p>${getImportantMonths(py, pn)}<p class="small-muted">Reflection: ${numberMeaning(pn).growth}</p></div>`);
+    }
+    document.getElementById("monthForecast").innerHTML = months.join("");
+
+    const pyNext = personalYear(birthDate, currentYear + 1);
+    document.getElementById("diamondReport").innerHTML =
+      `<div class="reading"><h3>Year One · ${currentYear} — ${yearTheme(py)}</h3><p><strong>Mental:</strong> Consider which assumptions, habits, or priorities deserve a fresh look. ${numberMeaning(py).growth}</p><p><strong>Spiritual:</strong> Use reflection, journaling, or quiet time to connect daily choices with your personal values.</p><p><strong>Practical:</strong> Choose a realistic goal, identify the resources you need, and decide what progress would look like.</p></div>` +
+      `<div class="reading"><h3>Year Two · ${currentYear + 1} — ${yearTheme(pyNext)}</h3><p><strong>Mental:</strong> Revisit what you learned this year and decide which ideas deserve continued attention. ${numberMeaning(pyNext).growth}</p><p><strong>Spiritual:</strong> Explore whether your commitments still reflect what matters to you, leaving room for changing perspectives.</p><p><strong>Practical:</strong> Review your progress and adjust your next steps to fit your circumstances and available resources.</p></div>`;
+
+    document.getElementById("talentReport").innerHTML =
+      `<div class="reading"><h3>Expression ${exp} · ${numberMeaning(exp).title}</h3><p>${numberMeaning(exp).core}</p><p><strong>Strengths to explore:</strong> ${numberMeaning(exp).talent}</p><p><strong>Potential growth area:</strong> ${numberMeaning(exp).growth}</p></div>` +
+      `<div class="reading"><h3>Life Path ${lp} · ${deep.title}</h3><p>${deep.p1}</p><p><strong>Career areas to research:</strong> ${numberMeaning(lp).talent}</p><p><strong>Growth focus:</strong> ${numberMeaning(lp).growth}</p></div>` +
+      `<p class="small-muted">These career suggestions are possibilities for exploration, not an assessment of qualifications or a guarantee of professional success.</p>`;
+
+    const lucky = [lp, att, exp, soul, mat, py].filter((v, i, a) => a.indexOf(v) === i);
+    document.getElementById("luckyReport").innerHTML = `<div class="number-grid">${lucky.map(n => card("Number " + n, n, numberMeaning(n).lucky)).join("")}</div><p>Lucky Numbers aren't a shortcut to winning the lottery or a reason to take financial risks. Think of them as personal symbols that can prompt reflection and intentional choices.</p>`;
+
+    const relSection = document.getElementById("relationshipSection");
+    if (otherName.trim() && otherDate) {
+      relSection.style.display = "block";
+      const oExp = reduce(nameTotal(otherName));
+      const oSoul = reduce(nameTotal(otherName, "vowels"));
+      const oLp = lifePath(otherDate);
+      const oAtt = attitude(otherDate);
+      const oMat = maturity(otherDate, oExp);
+      const aVals = [lp, att, exp, soul, mat];
+      const bVals = [oLp, oAtt, oExp, oSoul, oMat];
+      const labels = ["Life Path", "Attitude", "Expression", "Soul Urge", "Maturity"];
+      const comparison = aVals.map((a, i) => {
+        const b = bVals[i];
+        const text = a === b
+          ? "You share this number, which may point to a similar symbolic theme. Explore how that similarity shows up in your real experiences."
+          : `Your numbers emphasize ${numberMeaning(a).title.toLowerCase()} and ${numberMeaning(b).title.toLowerCase()} respectively. These differences can offer complementary perspectives when both people communicate openly.`;
+        return `<div class="reading"><h3>${labels[i]}: ${a} &amp; ${b}</h3><p><strong>You:</strong> ${numberMeaning(a).core}</p><p><strong>${escapeHtml(otherName)}:</strong> ${numberMeaning(b).core}</p><p><strong>Compatibility reflection:</strong> ${text}</p><p><strong>Harmony tip:</strong> ${numberMeaning(a).growth} ${numberMeaning(b).growth}</p></div>`;
+      }).join("");
+      document.getElementById("relationshipReport").innerHTML = `<div class="compat-grid"><div class="cycle-card"><h3>${escapeHtml(name)}</h3><p>${fmtDate(birthDate)}</p></div><div class="cycle-card"><h3>${escapeHtml(otherName)}</h3><p>${fmtDate(otherDate)}</p></div></div><p style="margin-top:18px">This comparison explores five core numbers for each person. It is intended to encourage understanding and conversation, not to determine whether a relationship will succeed.</p>${comparison}`;
+    } else {
+      relSection.style.display = "none";
+      document.getElementById("relationshipReport").innerHTML = "";
+    }
+
+    const resultsEl = document.getElementById("results");
+    resultsEl.classList.add("is-visible");
+    resultsEl.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function showError(msg) {
+    const errEl = document.getElementById("formError");
+    errEl.textContent = msg;
+    errEl.classList.add("visible");
+  }
+
+  function clearError() {
+    const errEl = document.getElementById("formError");
+    errEl.textContent = "";
+    errEl.classList.remove("visible");
+  }
+
+  function handleReveal(e) {
+    if (e) e.preventDefault();
+    clearError();
+
+    const name = document.getElementById("personName").value.trim();
+    const birthDate = document.getElementById("birthDate").value.trim();
+    const otherName = document.getElementById("otherName").value.trim();
+    const otherDate = document.getElementById("otherDate").value.trim();
+
+    if (!name || !lettersOnly(name)) {
+      showError("Please enter your full birth name using letters.");
+      document.getElementById("personName").focus();
+      return;
+    }
+    if (!birthDate || !/^\d{4}-\d{2}-\d{2}$/.test(birthDate)) {
+      showError("Please select a valid date of birth.");
+      document.getElementById("birthDate").focus();
+      return;
+    }
+    if ((otherName && !otherDate) || (!otherName && otherDate)) {
+      showError("For relationship compatibility, please enter both the other person's name and date of birth, or leave both blank.");
+      return;
+    }
+    if (otherName && !lettersOnly(otherName)) {
+      showError("Please enter the other person's name using letters.");
+      document.getElementById("otherName").focus();
+      return;
+    }
+    const todayStr = new Date().toISOString().slice(0, 10);
+    if (birthDate > todayStr || (otherDate && otherDate > todayStr)) {
+      showError("Birth dates cannot be in the future.");
+      return;
+    }
+
+    try {
+      renderChart(name, birthDate, otherName, otherDate);
+    } catch (err) {
+      console.error("Chart rendering error:", err);
+      showError("Something went wrong generating your chart: " + err.message);
+    }
+  }
+
+  const form = document.getElementById("chartForm");
+  const revealBtn = document.getElementById("revealBtn");
+
+  // Multi-method binding: form submit + direct button click + Enter key
+  form.addEventListener("submit", handleReveal);
+  revealBtn.addEventListener("click", handleReveal);
+  form.addEventListener("keydown", function(e) {
+    if (e.key === "Enter") handleReveal(e);
+  });
+
+  form.addEventListener("reset", function() {
+    clearError();
+    document.getElementById("results").classList.remove("is-visible");
+  });
+})();
+</script>
+</body>
+</html>
